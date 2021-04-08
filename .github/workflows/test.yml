@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Install dependencies
-      run: sudo apt-get install libwebp-dev libwebpdemux libwebpmux
+      run: sudo apt-get install libwebp-dev libwebpdemux2 libwebpmux3
 
     - uses: actions/checkout@v2
 
