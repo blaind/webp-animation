@@ -11,7 +11,7 @@
 > A high-level Rust wrapper for decoding and encoding
 [WebP](https://en.wikipedia.org/wiki/WebP) animations
 
-![Example](data/example.webp)
+![Example](data/example.gif)
 
 *See `examples/encode_animation.rs` for source code of encoding the above image*
 
