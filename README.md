@@ -18,7 +18,7 @@
 Underlying WebP format processing is handled by C-based
 [libwebp](https://developers.google.com/speed/webp/docs/container-api) library,
 which is interfaced through Rust [libwebp-sys2](https://crates.io/crates/libwebp-sys2)
-crate (currently through a patched version, see [pull request](https://github.com/qnighy/libwebp-sys2-rs/pull/5))
+crate.
 
 Functional Goals:
 * Easy-to-use API that looks like Rust

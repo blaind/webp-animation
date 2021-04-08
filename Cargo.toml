@@ -16,6 +16,7 @@ edition = "2018"
 image = { version = "0.23.14", optional = true }
 
 [dependencies.libwebp-sys2]
+version = "0.1.2"
 git = "https://github.com/blaind/libwebp-sys2-rs"
 features = ["0_5", "demux", "mux"]
 rev = "d0daaff"
