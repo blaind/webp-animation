@@ -8,12 +8,12 @@
 [Docs Version]: https://docs.rs/webp-animation/badge.svg
 [docs]: https://docs.rs/webp-animation
 
-> A high-level Rust wrapper for decoding and encoding
+A high-level Rust wrapper for decoding and encoding
 [WebP](https://en.wikipedia.org/wiki/WebP) animations
 
 ![Example](data/example.gif)
 
-*See `examples/encode_animation.rs` for source code of encoding the above image - example converted to gif for all-browser support, see the [example.webp file](data/example.webp)
+*See `examples/encode_animation.rs` for source code of encoding the above image - example converted to gif for all-browser support, see the [example.webp file](data/example.webp)*
 
 Underlying WebP format processing is handled by C-based
 [libwebp](https://developers.google.com/speed/webp/docs/container-api) library,
