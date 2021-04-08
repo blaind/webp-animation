@@ -1,0 +1,13 @@
+[package]
+name = "webp-animation"
+version = "0.1.0"
+authors = ["Mika Vatanen <blaind@blaind.net>"]
+edition = "2018"
+
+[dependencies]
+libwebp-sys2 = { path = "../../repos/libwebp-sys2-rs", features = ["0_5", "demux", "mux"] }
+image = { version = "0.23.14", optional = true }
+
+[dev-dependencies]
+image = { version = "0.23.14" }
+imageproc = { version = "0.22.0" }
