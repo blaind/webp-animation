@@ -13,7 +13,7 @@
 
 ![Example](data/example.gif)
 
-*See `examples/encode_animation.rs` for source code of encoding the above image*
+*See `examples/encode_animation.rs` for source code of encoding the above image - example converted to gif for all-browser support, see the [example.webp file](data/example.webp)
 
 Underlying WebP format processing is handled by C-based
 [libwebp](https://developers.google.com/speed/webp/docs/container-api) library,
