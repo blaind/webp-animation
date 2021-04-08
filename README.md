@@ -9,16 +9,16 @@
 [docs]: https://docs.rs/webp-animation
 
 > A high-level Rust wrapper for decoding and encoding
-[WebP](https://en.wikipedia.org/wiki/WebP) **animations**
+[WebP](https://en.wikipedia.org/wiki/WebP) animations
 
 ![Example](data/example.webp)
 
-*See `examples/encode_animation.rs` for source code of above image*
+*See `examples/encode_animation.rs` for source code of encoding the above image*
 
 Underlying WebP format processing is handled by C-based
-[libwebp](https://developers.google.com/speed/webp/docs/container-api) library by Google,
+[libwebp](https://developers.google.com/speed/webp/docs/container-api) library,
 which is interfaced through Rust [libwebp-sys2](https://crates.io/crates/libwebp-sys2)
-crate
+crate (currently through a patched version, see [pull request](https://github.com/qnighy/libwebp-sys2-rs/pull/5))
 
 Functional Goals:
 * Easy-to-use API that looks like Rust
@@ -59,7 +59,7 @@ It is also possible to supply more decoding options through `Decoder::new_with_o
 ### Encoding
 
 Will take `n` frames as an input. WebP binary data is output at the end
-(wrapped into [`WebPData`] which acts as a `&[u8]`)
+(wrapped into `WebPData` which acts as a `&[u8]`)
 
 ```rust
 use webp_animation::{Encoder, Frame};

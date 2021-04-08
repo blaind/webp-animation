@@ -5,8 +5,12 @@ authors = ["Mika Vatanen <blaind@blaind.net>"]
 edition = "2018"
 
 [dependencies]
-libwebp-sys2 = { path = "../../repos/libwebp-sys2-rs", features = ["0_5", "demux", "mux"] }
 image = { version = "0.23.14", optional = true }
+
+[dependencies.libwebp-sys2]
+git = "https://github.com/blaind/libwebp-sys2-rs"
+features = ["0_5", "demux", "mux"]
+rev = "d0daaff"
 
 [dev-dependencies]
 image = { version = "0.23.14" }
