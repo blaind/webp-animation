@@ -251,8 +251,9 @@ checksum = "56d855069fafbb9b344c0f962150cd2c1187975cb1c22c1522c240d8c4986714"
 
 [[package]]
 name = "libwebp-sys2"
-version = "0.1.3-alpha.0"
-source = "git+https://github.com/blaind/libwebp-sys2-rs?rev=d0daaff#d0daaff36f61b8c354e33f0530495842b39f5fbc"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8357b017b613841a0c8c3462491af8a7f3c1ed197eb026b94932ebc4643339a8"
 dependencies = [
  "cc",
  "cfg-if 0.1.10",
