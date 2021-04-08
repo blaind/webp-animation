@@ -62,9 +62,12 @@ pub enum Error {
     /// Underlying data is in different color mode
     WrongColorMode(ColorMode, ColorMode),
 
-    // FIXME add documentation
-    NotPictureData,
+    /// Timestamp must be higher value than previous frame timestamp
+    TimestampMustBeHigherThanPrevious,
 
-    // FIXME add documentation
-    DimensionsMismatch((u32, u32), (u32, u32)),
+    /// Timestamp must be higher or equal to the previous frame timestamp
+    TimestampMustBeEqualOrHigherThanPrevious,
+
+    /// Encoder webp assembly failed
+    EncoderAssmebleFailed,
 }

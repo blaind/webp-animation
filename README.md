@@ -62,7 +62,7 @@ Will take `n` frames as an input. WebP binary data is output at the end
 (wrapped into `WebPData` which acts as a `&[u8]`)
 
 ```rust
-use webp_animation::{Encoder, Frame};
+use webp_animation::Encoder;
 
 // setup
 let dimensions = (64, 32);

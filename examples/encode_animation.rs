@@ -5,6 +5,8 @@ use imageproc::{drawing, rect::Rect};
 use webp_animation::Encoder;
 
 fn main() {
+    env_logger::init();
+
     let (width, height) = (480, 480);
     let (frames, total_time_ms) = (30, 1000);
 

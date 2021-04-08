@@ -136,6 +136,8 @@ impl<'a> Decoder<'a> {
             ));
         }
 
+        log::trace!("Decoder initialized. {:?}", info);
+
         Ok(Self {
             buffer,
             decoder_wr,
@@ -236,22 +238,21 @@ impl<'a> Iterator for DecoderIterator<'a> {
         let mut output_buffer = std::ptr::null_mut();
         let mut timestamp: i32 = 0;
 
-        let ret = unsafe {
+        if unsafe {
             webp::WebPAnimDecoderGetNext(
                 self.animation_decoder.decoder_wr.decoder,
                 &mut output_buffer,
                 &mut timestamp,
             )
-        };
-
-        // "False if any of the arguments are NULL, or if there is a parsing or decoding error, or if there are no more frames. Otherwise, returns true."
-        if ret != 1 {
-            // TODO: could log warning here? because has_more_frames returned more frames, but decode failed - parsing/decoding error?
+        } != 1
+        {
+            // "False if any of the arguments are NULL, or if there is a parsing or decoding error, or if there are no more frames. Otherwise, returns true."
+            log::warn!("webp::WebPAnimDecoderGetNext did not return success - frame parsing failed, parsing/decoding error?");
             return None;
         }
 
         if output_buffer == std::ptr::null_mut() {
-            // TODO: throw error here? should not happen - decided not to do assert! since its hardfault
+            log::error!("webp::WebPAnimDecoderGetNext returned null output ptr, can not decode a frame. This should not happen");
             return None;
         }
 
@@ -262,6 +263,12 @@ impl<'a> Iterator for DecoderIterator<'a> {
                 info.canvas_width as usize * info.canvas_height as usize * PIXEL_BYTES,
             )
         };
+
+        log::trace!(
+            "Decoded a frame, timestamp {}, {} bytes",
+            timestamp,
+            data.len()
+        );
 
         Some(Frame::new_from_decoder(
             timestamp,

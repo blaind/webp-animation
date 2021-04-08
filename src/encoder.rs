@@ -85,9 +85,9 @@ impl Default for EncoderOptions {
 
 pub struct Encoder {
     encoder_wr: EncoderWrapper,
-    current_frame: usize,
     frame: PictureWrapper,
     options: EncoderOptions,
+    previous_timestamp: i32,
 }
 
 impl Encoder {
@@ -102,11 +102,13 @@ impl Encoder {
         let enc_options = convert_options(&options)?;
         let encoder_wr = EncoderWrapper::new(dimensions, enc_options)?;
 
+        log::trace!("Encoder initialized with dimensions {:?}", dimensions);
+
         Ok(Self {
             encoder_wr,
-            current_frame: 0,
             options,
             frame: PictureWrapper::new(dimensions)?,
+            previous_timestamp: -1,
         })
     }
 
@@ -129,6 +131,10 @@ impl Encoder {
         timestamp: i32,
         config: Option<&EncodingConfig>,
     ) -> Result<(), Error> {
+        if timestamp <= self.previous_timestamp {
+            return Err(Error::TimestampMustBeHigherThanPrevious);
+        }
+
         self.frame.set_data(data, self.options.color_mode)?;
 
         if unsafe {
@@ -149,7 +155,9 @@ impl Encoder {
             return Err(Error::EncoderAddFailed);
         }
 
-        self.current_frame += 1;
+        self.previous_timestamp = timestamp;
+
+        log::trace!("Add frame at timestamp {}, {} bytes", timestamp, data.len());
 
         Ok(())
     }
@@ -159,7 +167,10 @@ impl Encoder {
     }
 
     pub fn finalize(self, timestamp: i32) -> Result<WebPData, Error> {
-        // FIXME check that timestamp > prev frame timestamp
+        if timestamp < self.previous_timestamp {
+            return Err(Error::TimestampMustBeEqualOrHigherThanPrevious);
+        }
+
         if unsafe {
             webp::WebPAnimEncoderAdd(
                 self.encoder_wr.encoder,
@@ -174,10 +185,16 @@ impl Encoder {
 
         let mut data = WebPData::new();
 
-        unsafe {
-            assert!(webp::WebPAnimEncoderAssemble(self.encoder_wr.encoder, data.inner_ref()) != 0);
-            // FIXME add error handling instead of assert
+        if unsafe { webp::WebPAnimEncoderAssemble(self.encoder_wr.encoder, data.inner_ref()) } == 0
+        {
+            return Err(Error::EncoderAssmebleFailed);
         }
+
+        log::trace!(
+            "Finalize encoding at timestamp {}, output binary size {} bytes",
+            timestamp,
+            data.len()
+        );
 
         Ok(data)
     }
@@ -393,7 +410,24 @@ mod tests {
             encoder.add_frame(&[0u8; 50 * 50 * 4], 0).unwrap_err(),
             Error::BufferSizeFailed(640_000, 10_000)
         );
-    }
 
-    // TEST failure on decreasing timestamp
+        encoder.add_frame(&[0u8; 400 * 400 * 4], 0).unwrap();
+
+        assert_eq!(
+            encoder.add_frame(&[0u8; 400 * 400 * 4], -1).unwrap_err(),
+            Error::TimestampMustBeHigherThanPrevious
+        );
+
+        assert_eq!(
+            encoder.add_frame(&[0u8; 400 * 400 * 4], 0).unwrap_err(),
+            Error::TimestampMustBeHigherThanPrevious
+        );
+
+        encoder.add_frame(&[0u8; 400 * 400 * 4], 10).unwrap();
+
+        assert_eq!(
+            encoder.finalize(0).unwrap_err(),
+            Error::TimestampMustBeEqualOrHigherThanPrevious
+        );
+    }
 }

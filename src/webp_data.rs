@@ -3,6 +3,7 @@ use std::{mem, ops::Deref, slice};
 use libwebp_sys as webp;
 
 /// A safe wrapper for WebP bytedata. Consider as `&[u8]` (implements [`Deref`])
+#[derive(Debug)]
 pub struct WebPData {
     data: webp::WebPData,
 }

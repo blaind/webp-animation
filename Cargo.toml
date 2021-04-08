@@ -14,6 +14,7 @@ edition = "2018"
 
 [dependencies]
 image = { version = "0.23.14", optional = true }
+log = "0.4.14"
 
 [dependencies.libwebp-sys2]
 version = "0.1.2"
@@ -24,3 +25,4 @@ features = ["0_5", "demux", "mux"]
 [dev-dependencies]
 image = { version = "0.23.14" }
 imageproc = { version = "0.22.0" }
+env_logger = "0.8.3"
