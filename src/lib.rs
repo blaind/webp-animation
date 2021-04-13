@@ -14,11 +14,13 @@ use std::fmt::Debug;
 
 mod decoder;
 mod encoder;
+mod encoder_config;
 mod frame;
 mod webp_data;
 
 pub use decoder::*;
 pub use encoder::*;
+pub use encoder_config::*;
 pub use frame::*;
 pub use webp_data::*;
 
