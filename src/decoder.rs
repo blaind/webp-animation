@@ -1,8 +1,5 @@
 use std::{fmt::Debug, mem, pin::Pin};
 
-#[cfg(feature = "image")]
-use image::ImageBuffer;
-
 use libwebp_sys as webp;
 
 use crate::{ColorMode, Error, Frame, PIXEL_BYTES};
@@ -95,6 +92,10 @@ impl<'a> Decoder<'a> {
     /// }).unwrap();
     /// ```
     pub fn new_with_options(buffer: &'a [u8], options: DecoderOptions) -> Result<Self, Error> {
+        if buffer.len() <= 0 {
+            return Err(Error::ZeroSizeBuffer);
+        }
+
         let mut decoder_options = Box::pin(unsafe {
             let mut options = mem::zeroed();
 
@@ -288,7 +289,7 @@ mod tests {
     #[test]
     fn test_decoder_failure() {
         let decoder = Decoder::new(&[]);
-        assert_eq!(decoder.unwrap_err(), Error::DecodeFailed);
+        assert_eq!(decoder.unwrap_err(), Error::ZeroSizeBuffer);
 
         let decoder = Decoder::new(&[0x00, 0x01]);
         assert_eq!(decoder.unwrap_err(), Error::DecodeFailed);

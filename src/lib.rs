@@ -9,6 +9,9 @@
 //!
 //! # Usage
 //! Have a look at [`Decoder`] and [`Encoder`] for use-case specific examples.
+
+use std::fmt::Debug;
+
 mod decoder;
 mod encoder;
 mod frame;
@@ -18,6 +21,10 @@ pub use decoder::*;
 pub use encoder::*;
 pub use frame::*;
 pub use webp_data::*;
+
+pub mod prelude {
+    pub use crate::{Decoder, Encoder, EncoderOptions, EncodingConfig, LossyEncodingConfig};
+}
 
 const PIXEL_BYTES: usize = 4;
 
@@ -32,7 +39,7 @@ pub enum ColorMode {
 }
 
 /// Error type produced by `webp_animation` code
-#[derive(Debug, PartialEq)]
+#[derive(PartialEq)]
 pub enum Error {
     /// Initializing webp options failed, internal (memory allocation?) failure
     OptionsInitFailed,
@@ -63,11 +70,46 @@ pub enum Error {
     WrongColorMode(ColorMode, ColorMode),
 
     /// Timestamp must be higher value than previous frame timestamp
-    TimestampMustBeHigherThanPrevious,
+    TimestampMustBeHigherThanPrevious(i32, i32),
 
     /// Timestamp must be higher or equal to the previous frame timestamp
-    TimestampMustBeEqualOrHigherThanPrevious,
+    TimestampMustBeEqualOrHigherThanPrevious(i32, i32),
 
     /// Encoder webp assembly failed
     EncoderAssmebleFailed,
+
+    /// Supplied dimensions must be positive
+    DimensionsMustbePositive,
+
+    /// No frames have been supplied to encoder
+    NoFramesAdded,
+
+    /// Supplied zero-sized buffer where bytes where expected
+    ZeroSizeBuffer,
+
+    /// Encoder config validation failed
+    InvalidEncodingConfig,
+}
+
+impl Debug for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Error::OptionsInitFailed => write!(f, "OptionsInitFailed: Initializing webp options failed, internal (memory allocation?) failure"),
+            Error::DecodeFailed => write!(f, "DecodeFailed: Could not decode input bytes, possibly malformed data"),
+            Error::DecoderGetInfoFailed => write!(f, "DecoderGetInfoFailed: Decoder could not get metadata of webp stream. Corrupt data?"),
+            Error::TooLargeCanvas(width, height, max_size) => write!(f, "TooLargeCanvas: Decodable canvas is too large ({} x {} = {} pixels). For now, size is limited to 3840 * 2160 = {} pixels", width, height, width * height, max_size),
+            Error::EncoderCreateFailed => write!(f, "EncoderCreateFailed: Encoder create failed. Wrong options combination?"),
+            Error::BufferSizeFailed(expected, received) => write!(f, "BufferSizeFailed: Expected (width * height * 4 = {}) bytes as input buffer, got {} bytes", expected, received),
+            Error::PictureImportFailed => write!(f, "PictureImportFailed: Raw data could not be converted into webp frame by underlying libwebp library"),
+            Error::EncoderAddFailed => write!(f, "EncoderAddFailed: Frame could not be added to webp stream by underlying libwebp library"),
+            Error::WrongColorMode(requested, expected) => write!(f, "WrongColorMode: Requested image in {:?} format but underlying is stored as {:?}", expected, requested),
+            Error::TimestampMustBeHigherThanPrevious(requested, previous) => write!(f, "TimestampMustBeHigherThanPrevious: Supplied timestamp (got {}) must be higher than {}", requested, previous),
+            Error::TimestampMustBeEqualOrHigherThanPrevious(requested, previous) => write!(f, "TimestampMustBeEqualOrHigherThanPrevious: Supplied timestamp (got {}) must be higher or equal to {}", requested, previous),
+            Error::EncoderAssmebleFailed => write!(f, "EncoderAssmebleFailed: Encoder webp assembly failed"),
+            Error::DimensionsMustbePositive => write!(f, "DimensionsMustbePositive: Supplied dimensions must be positive"),
+            Error::NoFramesAdded => write!(f, "NoFramesAdded: No frames have been added yet"),
+            Error::ZeroSizeBuffer => write!(f, "ZeroSizeBuffer: Buffer contains no data"),
+            Error::InvalidEncodingConfig => write!(f, "InvalidEncodingConfig: encoding configuration validation failed")
+        }
+    }
 }

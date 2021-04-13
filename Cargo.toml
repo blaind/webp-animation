@@ -19,7 +19,7 @@ log = "0.4.14"
 [dependencies.libwebp-sys2]
 version = "0.1.2"
 #git = "https://github.com/blaind/libwebp-sys2-rs"
-features = ["0_5", "demux", "mux"]
+features = ["0_5", "0_6", "1_2", "demux", "mux"]
 #rev = "d0daaff"
 
 [dev-dependencies]
