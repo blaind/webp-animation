@@ -9,10 +9,16 @@ cargo-fuzz = true
 
 [dependencies]
 libfuzzer-sys = "0.3.0"
-webp_animation = { path = ".." }
+webp-animation = { path = ".." }
 
 [[bin]]
 name = "encoder"
 path = "fuzz_targets/encoder.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "decoder"
+path = "fuzz_targets/decoder.rs"
 test = false
 doc = false

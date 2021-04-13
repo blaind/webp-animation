@@ -40,17 +40,23 @@ Non-goals
 Will take a webp buffer, and try to decode it to frame(s)
 
 ```rust
-use webp_animation::Decoder;
+use webp_animation::prelude::*;
 
 let buffer = std::fs::read("./data/animated.webp").unwrap();
 let decoder = Decoder::new(&buffer).unwrap();
 
 for frame in decoder.into_iter() {
-    assert_eq!(frame.dimensions(), (400, 400));
-    assert_eq!(frame.data().len(), 400 * 400 * 4); // w * h * rgba
+  assert_eq!(frame.dimensions(), (400, 400));
 
-    // if feature `image` is enabled (not by default), one can convert data to [`Image::ImageBuffer`]
-    assert_eq!(frame.into_image().unwrap().dimensions(), (400, 400));
+  // w * h * rgba
+  assert_eq!(frame.data().len(), 400 * 400 * 4);
+
+  // if feature `image` is enabled (not by default),
+  // one can convert data to [`Image::ImageBuffer`]
+  assert_eq!(
+    frame.into_image().unwrap().dimensions(),
+    (400, 400)
+  );
 }
 ```
 
@@ -62,19 +68,26 @@ Will take `n` frames as an input. WebP binary data is output at the end
 (wrapped into `WebPData` which acts as a `&[u8]`)
 
 ```rust
-use webp_animation::Encoder;
+use webp_animation::prelude::*;
 
 // setup
 let dimensions = (64, 32);
 let bright_frame = [255, 255, 255, 255].repeat(64 * 32);
 let dark_frame = [0, 0, 0, 255].repeat(64 * 32);
 
-// init encoder. uses by default lossless encoding, for other alternatives see documentation about `new_with_options`
+// init encoder. uses by default lossless encoding,
+// for other alternatives see documentation about
+// `new_with_options`
 let mut encoder = Encoder::new(dimensions).unwrap();
 
 // insert frames to specific (increasing) timestamps
 for i in 0..5 {
-  let rgba_data = if i % 2 == 0 { &bright_frame } else { &dark_frame };
+  let rgba_data = if i % 2 == 0 {
+    &bright_frame
+  } else {
+    &dark_frame
+  };
+
   let frame_timestamp = i * 170;
 
   encoder.add_frame(rgba_data, frame_timestamp).unwrap();

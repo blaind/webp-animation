@@ -3,7 +3,7 @@ use libfuzzer_sys::fuzz_target;
 use webp_animation::Decoder;
 
 fuzz_target!(|data: &[u8]| {
-    let decoder = match Decoder::new(&data, Default::default()) {
+    let decoder = match Decoder::new(&data) {
         Ok(dec) => dec,
         Err(_) => {
             return;
