@@ -2,6 +2,9 @@ use std::mem;
 
 use crate::{ColorMode, Error};
 
+#[allow(unused_imports)]
+use crate::Encoder; // needed by docs
+
 use libwebp_sys as webp;
 
 /// An options struct for [`Encoder`] instance
@@ -37,7 +40,7 @@ pub struct EncoderOptions {
 
     /// Default per-frame encoding config, optional. Can also be added per-frame
     /// by [`Encoder::add_frame_with_config`]
-    pub encoding: Option<EncodingConfig>,
+    pub encoding_config: Option<EncodingConfig>,
 }
 
 impl Default for EncoderOptions {
@@ -49,20 +52,28 @@ impl Default for EncoderOptions {
             allow_mixed: false,
             verbose: false,
             color_mode: ColorMode::Rgba,
-            encoding: None,
+            encoding_config: None,
         }
     }
 }
 
+/// Encoding type
 #[derive(Debug, Clone)]
 pub enum EncodingType {
+    /// Lossy encoding
     Lossy(LossyEncodingConfig),
+
+    /// Losless encoding. Default.
     Lossless,
 }
 
+/// Encoding configuration. Can be set for [`Encoder`] globally or per frame
+///
+/// Set globally as part of [`EncoderOptions`] when using [`Encoder::new_with_options`],
+/// or per frame through [`Encoder::add_frame_with_config`]
 #[derive(Debug, Clone)]
 pub struct EncodingConfig {
-    /// Encoding Type (lossless or lossy). Default lossless
+    /// Encoding Type (lossless or lossy). Defaults to lossless
     pub encoding_type: EncodingType,
 
     /// Between 0 and 100. For lossy, 0 gives the smallest
@@ -105,7 +116,7 @@ impl Default for EncodingConfig {
     }
 }
 
-/// Parameters related to lossy compression only:
+/// Parameters related to lossy compression only
 #[derive(Debug, Clone)]
 pub struct LossyEncodingConfig {
     /// if non-zero, set the desired target size in bytes.
@@ -130,18 +141,18 @@ pub struct LossyEncodingConfig {
 
     /// filtering type: 0 = simple, 1 = strong (only used
     /// if filter_strength > 0 or autofilter > 0)
-    pub filter_type: bool,
+    pub filter_type: usize,
 
-    /// Auto adjust filter's strength [0 = off, 1 = on]
+    /// Auto adjust filter's strength [false = off, true = on]
     pub autofilter: bool,
 
-    /// Algorithm for encoding the alpha plane (0 = none,
-    /// 1 = compressed with WebP lossless). Default is 1.
+    /// Algorithm for encoding the alpha plane (false = none,
+    /// true = compressed with WebP lossless). Default is true.
     pub alpha_compression: bool,
 
     /// Predictive filtering method for alpha plane.
     /// 0: none, 1: fast, 2: best. Default if 1.
-    pub alpha_filtering: isize, // TODO enum
+    pub alpha_filtering: usize,
 
     /// Between 0 (smallest size) and 100 (lossless).
     /// Default is 100.
@@ -180,7 +191,7 @@ impl Default for LossyEncodingConfig {
             sns_strength: 50,
             filter_strength: 60,
             filter_sharpness: 0,
-            filter_type: true,
+            filter_type: 1,
             partitions: 0,
             pass: 1,
             show_compressed: false,
@@ -196,33 +207,33 @@ impl Default for LossyEncodingConfig {
 }
 
 impl LossyEncodingConfig {
-    pub fn new_preset_default() -> Self {
+    pub fn new_from_default_preset() -> Self {
         Self {
             ..Default::default()
         }
     }
 
-    pub fn new_preset_picture() -> Self {
+    pub fn new_from_picture_preset() -> Self {
         Self {
             sns_strength: 80,
             filter_sharpness: 4,
             filter_strength: 35,
-            // preprocessing: 2, FIXME
+            preprocessing: false,
             ..Default::default()
         }
     }
 
-    pub fn new_preset_photo() -> Self {
+    pub fn new_from_photo_preset() -> Self {
         Self {
             sns_strength: 80,
             filter_sharpness: 3,
             filter_strength: 30,
-            // preprocessing: 2, FIXME
+            preprocessing: false,
             ..Default::default()
         }
     }
 
-    pub fn new_preset_drawing() -> Self {
+    pub fn new_from_drawing_preset() -> Self {
         Self {
             sns_strength: 25,
             filter_sharpness: 6,
@@ -231,20 +242,20 @@ impl LossyEncodingConfig {
         }
     }
 
-    pub fn new_preset_icon() -> Self {
+    pub fn new_from_icon_preset() -> Self {
         Self {
             sns_strength: 0,
             filter_strength: 0,
-            // preprocessing: 2, FIXME
+            preprocessing: false,
             ..Default::default()
         }
     }
 
-    pub fn new_preset_text() -> Self {
+    pub fn new_from_text_preset() -> Self {
         Self {
             sns_strength: 0,
             filter_strength: 0,
-            // preprocessing: 2, FIXME
+            preprocessing: false,
             segments: 2,
             ..Default::default()
         }
@@ -269,9 +280,6 @@ impl LossyEncodingConfig {
         webp_config.partition_limit = self.partition_limit as i32;
         webp_config.use_sharp_yuv = self.use_sharp_yuv as i32;
     }
-
-    // FIXME could implement presets
-    // (WEBP_PRESET_PICTURE, WEBP_PRESET_PHOTO, WEBP_PRESET_DRAWING, WEBP_PRESET_ICON, WEBP_PRESET_TEXT)
 }
 
 pub(crate) struct ConfigContainer {

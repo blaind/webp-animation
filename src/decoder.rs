@@ -30,7 +30,7 @@ impl Default for DecoderOptions {
 /// Will take a webp buffer, and try to decode it to frame(s)
 ///
 /// ```rust
-/// use webp_animation::Decoder;
+/// use webp_animation::prelude::*;
 ///
 /// let buffer = std::fs::read("./data/animated.webp").unwrap();
 /// let decoder = Decoder::new(&buffer).unwrap();
@@ -46,7 +46,7 @@ impl Default for DecoderOptions {
 /// If `image` feature is enabled, frames can be produced in [`image::ImageBuffer`]
 /// format:
 /// ```rust
-/// # use webp_animation::Decoder;
+/// use webp_animation::prelude::*;
 /// #
 /// # let buffer = std::fs::read("./data/animated.webp").unwrap();
 /// # let decoder = Decoder::new(&buffer).unwrap();
@@ -69,7 +69,7 @@ impl<'a> Decoder<'a> {
     /// Returns an [`Error`] in case of a decoding failure (e.g. malformed input)
     ///
     /// ```
-    /// # use webp_animation::Decoder;
+    /// # use webp_animation::prelude::*;
     /// #
     /// let buffer = std::fs::read("./data/animated.webp").unwrap();
     /// let decoder = Decoder::new(&buffer).unwrap();
@@ -83,7 +83,7 @@ impl<'a> Decoder<'a> {
     /// Returns an [`Error`] in case of a decoding failure (e.g. malformed input)
     ///
     /// ```
-    /// # use webp_animation::{Decoder, DecoderOptions, ColorMode};
+    /// # use webp_animation::prelude::*;
     /// #
     /// let buf = std::fs::read("./data/animated.webp").unwrap();
     /// let decoder = Decoder::new_with_options(&buf, DecoderOptions {
@@ -150,7 +150,7 @@ impl<'a> Decoder<'a> {
     /// Returns dimensions for webp frames (`width`, `height`)
     ///
     /// ```
-    /// # use webp_animation::{Decoder, DecoderOptions, ColorMode};
+    /// # use webp_animation::prelude::*;
     /// #
     /// let buffer = std::fs::read("./data/animated.webp").unwrap();
     /// let decoder = Decoder::new(&buffer).unwrap();

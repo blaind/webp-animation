@@ -69,7 +69,7 @@ let dimensions = (64, 32);
 let bright_frame = [255, 255, 255, 255].repeat(64 * 32);
 let dark_frame = [0, 0, 0, 255].repeat(64 * 32);
 
-// init encoder
+// init encoder. uses by default lossless encoding, for other alternatives see documentation about `new_with_options`
 let mut encoder = Encoder::new(dimensions).unwrap();
 
 // insert frames to specific (increasing) timestamps
@@ -86,7 +86,8 @@ let webp_data = encoder.finalize(final_timestamp).unwrap();
 std::fs::write("my_animation.webp", webp_data).unwrap();
 ```
 
-TODO: add about encoder options
+See [docs](https://docs.rs/webp-animation/0.1.3/webp_animation/) for other encoding options, e.g.
+for lossy encoding.
 
 ## Future plans
 

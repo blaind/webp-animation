@@ -25,7 +25,14 @@ pub use frame::*;
 pub use webp_data::*;
 
 pub mod prelude {
-    pub use crate::{Decoder, Encoder, EncoderOptions, EncodingConfig, LossyEncodingConfig};
+    // general
+    pub use crate::ColorMode;
+
+    // decoder
+    pub use crate::{Decoder, DecoderOptions};
+
+    // encoder
+    pub use crate::{Encoder, EncoderOptions, EncodingConfig, EncodingType, LossyEncodingConfig};
 }
 
 const PIXEL_BYTES: usize = 4;

@@ -6,13 +6,18 @@ use crate::{
     ColorMode, ConfigContainer, EncoderOptions, EncodingConfig, Error, WebPData, PIXEL_BYTES,
 };
 
+#[allow(unused_imports)]
+use crate::LossyEncodingConfig; // for docs
+
 /// An encoder for creating webp animation
 ///
 /// Will take `n` frames as an input. WebP binary data is output at the end
 /// (wrapped into [`WebPData`] which acts as a `&[u8]`)
 ///
+/// # Example without special configuration
+///
 /// ```rust
-/// use webp_animation::{Encoder, Frame};
+/// use webp_animation::prelude::*;
 ///
 /// // setup
 /// let dimensions = (64, 32);
@@ -35,6 +40,50 @@ use crate::{
 /// let webp_data = encoder.finalize(final_timestamp).unwrap();
 /// // std::fs::write("my_animation.webp", webp_data);
 /// ```
+///
+/// # Example with configuration
+///
+/// See [`EncodingConfig`] and [`LossyEncodingConfig`] for per-field explanations.
+/// ```rust
+/// use webp_animation::prelude::*;
+///
+/// let mut encoder = Encoder::new_with_options((640, 480), EncoderOptions {
+///     kmin: 3,
+///     kmax: 5,
+///     encoding_config: Some(EncodingConfig {
+///         quality: 75.,
+///         encoding_type: EncodingType::Lossy(LossyEncodingConfig {
+///             segments: 2,
+///             alpha_compression: true,
+///             ..Default::default()
+///         }),
+///         ..Default::default()
+///     }),
+///     ..Default::default()
+/// }).unwrap();
+/// ```
+///
+/// # Example with per-frame configuration
+///
+/// ```rust
+/// use webp_animation::prelude::*;
+///
+/// let mut encoder = Encoder::new_with_options((640, 480), EncoderOptions {
+///     kmin: 3,
+///     kmax: 5,
+///     ..Default::default()
+/// }).unwrap();
+///
+/// encoder.add_frame_with_config(&[0u8; 640 * 480 * 4], 0, &EncodingConfig {
+///     quality: 75.,
+///     encoding_type: EncodingType::Lossy(LossyEncodingConfig {
+///         segments: 2,
+///         alpha_compression: true,
+///         ..Default::default()
+///     }),
+///     ..Default::default()
+/// }).unwrap();
+/// ```
 pub struct Encoder {
     encoder_wr: EncoderWrapper,
     frame: PictureWrapper,
@@ -44,10 +93,12 @@ pub struct Encoder {
 }
 
 impl Encoder {
+    /// Construct a new encoder with default options for dimensions (`width`, `height`)
     pub fn new(dimensions: (u32, u32)) -> Result<Self, Error> {
         Encoder::new_with_options(dimensions, Default::default())
     }
 
+    /// Construct a new encoder with custom options for dimensions (`width`, `height`)
     pub fn new_with_options(
         dimensions: (u32, u32),
         options: EncoderOptions,
@@ -55,6 +106,7 @@ impl Encoder {
         if dimensions.0 <= 0 || dimensions.1 <= 0 {
             return Err(Error::DimensionsMustbePositive);
         }
+
         let enc_options = convert_options(&options)?;
         let encoder_wr = EncoderWrapper::new(dimensions, enc_options)?;
 
@@ -68,13 +120,28 @@ impl Encoder {
             encoding_config: None,
         };
 
-        if let Some(config) = options.encoding {
+        if let Some(config) = options.encoding_config {
             encoder.set_default_encoding_config(config)?;
         }
 
         Ok(encoder)
     }
 
+    /// Add a new frame to be encoded
+    ///
+    /// Inputs
+    /// * `data` is an array of pixels in [`ColorMode`] format set by [`EncoderOptions`]
+    ///   ([`ColorMode::Rgba`] by default)
+    /// * `timestamp` of this frame in milliseconds. Duration of a frame would be
+    ///   calculated as "timestamp of next frame - timestamp of this frame".
+    ///   Hence, timestamps should be in non-decreasing order.
+    pub fn add_frame(&mut self, data: &[u8], timestamp: i32) -> Result<(), Error> {
+        self.add_frame_internal(data, timestamp, None)
+    }
+
+    /// Add a new frame to be encoded with special per-frame configuration ([`EncodingConfig`])
+    ///
+    /// See [`Encoder::add_frame`] for `data` and `timestamp` explanations
     pub fn add_frame_with_config(
         &mut self,
         data: &[u8],
@@ -82,10 +149,6 @@ impl Encoder {
         config: &EncodingConfig,
     ) -> Result<(), Error> {
         self.add_frame_internal(data, timestamp, Some(config))
-    }
-
-    pub fn add_frame(&mut self, data: &[u8], timestamp: i32) -> Result<(), Error> {
-        self.add_frame_internal(data, timestamp, None)
     }
 
     fn add_frame_internal(
@@ -131,12 +194,18 @@ impl Encoder {
         Ok(())
     }
 
+    /// Sets the default encoding config
+    ///
+    /// Usually set in [`EncderOptions`] at constructor ([`Encoder::new_with_options`])
     pub fn set_default_encoding_config(&mut self, config: EncodingConfig) -> Result<(), Error> {
         self.encoding_config = Some(config.to_config_container()?);
-        self.options.encoding = Some(config);
+        self.options.encoding_config = Some(config);
         Ok(())
     }
 
+    /// Will encode the stream and return encoded bytes in a [`WebPData`] upon success
+    ///
+    /// `timestamp` behaves as in [`Encoder::add_frame`]
     pub fn finalize(self, timestamp: i32) -> Result<WebPData, Error> {
         if self.previous_timestamp == -1 {
             // -1 = no frames added
