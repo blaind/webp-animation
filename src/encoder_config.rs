@@ -67,6 +67,12 @@ pub enum EncodingType {
     Lossless,
 }
 
+impl EncodingType {
+    pub fn new_lossy() -> Self {
+        EncodingType::Lossy(LossyEncodingConfig::default())
+    }
+}
+
 /// Encoding configuration. Can be set for [`Encoder`] globally or per frame
 ///
 /// Set globally as part of [`EncoderOptions`] when using [`Encoder::new_with_options`],
@@ -89,6 +95,14 @@ pub struct EncodingConfig {
 }
 
 impl EncodingConfig {
+    pub fn new_lossy(quality: f32) -> Self {
+        Self {
+            encoding_type: EncodingType::new_lossy(),
+            quality,
+            ..Default::default()
+        }
+    }
+
     pub(crate) fn to_config_container(&self) -> Result<ConfigContainer, Error> {
         ConfigContainer::new(self)
     }

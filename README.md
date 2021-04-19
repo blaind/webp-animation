@@ -1,9 +1,11 @@
-# webp-animation &emsp; [![Build Status]][actions] [![Latest Version]][crates.io] [![Docs Version]][docs]
+# webp-animation &emsp; [![Build Status]][actions] [![Latest Version]][crates.io] [![Docs Version]][docs] [![Lines of Code]][github]
 
 [Build Status]: https://img.shields.io/github/workflow/status/blaind/webp-animation/test
 [actions]: https://github.com/blaind/webp-animation/actions?query=branch%3Amain
 [Latest Version]: https://img.shields.io/crates/v/webp-animation.svg
 [crates.io]: https://crates.io/crates/webp-animation
+[Lines of Code]: https://tokei.rs/b1/github/blaind/webp-animation?category=code
+[github]: https://github.com/blaind/webp-animation
 
 [Docs Version]: https://docs.rs/webp-animation/badge.svg
 [docs]: https://docs.rs/webp-animation
