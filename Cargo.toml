@@ -24,3 +24,6 @@ features = ["0_5", "0_6", "1_2", "demux", "mux"]
 image = { version = "0.23.14" }
 imageproc = { version = "0.22.0" }
 env_logger = "0.8.3"
+
+[features]
+static = ["libwebp-sys2/static"]
