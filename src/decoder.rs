@@ -316,6 +316,8 @@ mod tests {
     #[cfg(feature = "image")]
     #[test]
     fn test_decode_to_image() {
+        use image::{codecs::png::PngDecoder, DynamicImage, ImageDecoder as _, ImageOutputFormat};
+
         let buffer = get_animated_buffer();
         let decoder = Decoder::new(&buffer).unwrap();
         let mut iter = decoder.into_iter();
@@ -327,6 +329,13 @@ mod tests {
         let frame = iter.next().unwrap();
         let image = frame.into_image().unwrap();
         assert_eq!(image.dimensions(), (400, 400));
+
+        let mut buf = Vec::new();
+        DynamicImage::ImageRgba8(image)
+            .write_to(&mut buf, ImageOutputFormat::Png)
+            .unwrap();
+        let png_decoder = PngDecoder::new(&buf[..]).unwrap();
+        assert_eq!(png_decoder.dimensions(), (400, 400));
     }
 
     #[test]
