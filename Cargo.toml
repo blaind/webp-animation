@@ -13,7 +13,7 @@ categories = ["multimedia::images", "multimedia", "api-bindings"]
 edition = "2018"
 
 [dependencies]
-image = { version = "0.23.14", optional = true }
+image = { version = "0.23.14", default_features = false, optional = true }
 log = "0.4.14"
 
 [dependencies.libwebp-sys2]
@@ -21,7 +21,7 @@ version = "0.1.2"
 features = ["0_5", "0_6", "1_2", "demux", "mux"]
 
 [dev-dependencies]
-image = { version = "0.23.14" }
+image = { version = "0.23.14", default_features = false, features = ["png"] }
 imageproc = { version = "0.22.0" }
 env_logger = "0.8.3"
 
