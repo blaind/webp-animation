@@ -8,6 +8,10 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        rust: [stable, 1.47]
 
     steps:
     - name: Install dependencies
