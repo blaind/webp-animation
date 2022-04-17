@@ -1,7 +1,8 @@
+use log::{info, warn};
 use webp_animation::{Decoder, Encoder};
 
 fn main() {
-    env_logger::init();
+    env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
 
     print_err(0, Encoder::new((0, 0)));
     let mut encoder = Encoder::new((1, 1)).unwrap();
@@ -34,9 +35,9 @@ where
     B: std::fmt::Debug,
 {
     match result {
-        Ok(_) => println!("Result {}: returned OK", num),
+        Ok(_) => info!("Result {}: returned OK", num),
         Err(e) => {
-            println!("Result {}: {:?}", num, e);
+            warn!("Result {}: {:?}", num, e);
         }
     }
 }
