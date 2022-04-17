@@ -27,4 +27,6 @@
 
 ### Changed
 
-- [Disabled image default features][3]
+- [Disabled image default features][2]
+
+[2]: https://github.com/blaind/webp-animation/pull/2
