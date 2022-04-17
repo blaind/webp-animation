@@ -125,17 +125,6 @@ impl Frame {
 
         Ok(ImageBuffer::from_vec(self.dimensions.0, self.dimensions.1, self.frame_data).unwrap())
     }
-
-    /// Convert the frame to [`image::ImageBuffer`] in `Bgra<u8>` format
-    ///
-    /// Must have [`ColorMode`] set to [`ColorMode::Bgra`] when creating [`Decoder`]
-    #[cfg(feature = "image")]
-    pub fn into_bgra_image(self) -> Result<ImageBuffer<image::Bgra<u8>, Vec<u8>>, Error> {
-        if self.color_mode != ColorMode::Bgra {
-            return Err(Error::WrongColorMode(self.color_mode, ColorMode::Bgra));
-        }
-        Ok(ImageBuffer::from_vec(self.dimensions.0, self.dimensions.1, self.frame_data).unwrap())
-    }
 }
 
 impl Debug for Frame {

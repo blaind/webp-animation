@@ -20,14 +20,6 @@ fn main() {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         ]),
     );
-
-    #[cfg(feature = "image")]
-    {
-        let buffer = std::fs::read("./data/animated.webp").unwrap();
-        let decoder = Decoder::new(&buffer).unwrap();
-        let frame = decoder.into_iter().next().unwrap();
-        print_err(6, frame.into_bgra_image());
-    }
 }
 
 fn print_err<A, B>(num: usize, result: Result<A, B>)
