@@ -10,7 +10,7 @@
 //! # Usage
 //! Have a look at [`Decoder`] and [`Encoder`] for use-case specific examples.
 
-use std::fmt::Debug;
+use std::fmt::{self, Display};
 
 mod decoder;
 mod encoder;
@@ -48,7 +48,7 @@ pub enum ColorMode {
 }
 
 /// Error type produced by `webp_animation` code
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Error {
     /// Initializing webp options failed, internal (memory allocation?) failure
     OptionsInitFailed,
@@ -100,8 +100,8 @@ pub enum Error {
     InvalidEncodingConfig,
 }
 
-impl Debug for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Error::OptionsInitFailed => write!(f, "OptionsInitFailed: Initializing webp options failed, internal (memory allocation?) failure"),
             Error::DecodeFailed => write!(f, "DecodeFailed: Could not decode input bytes, possibly malformed data"),
@@ -122,3 +122,5 @@ impl Debug for Error {
         }
     }
 }
+
+impl std::error::Error for Error {}
