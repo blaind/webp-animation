@@ -1,6 +1,14 @@
 # Changelog
 
-[git_tag_comparison]: https://github.com/bevyengine/bevy/compare/v0.6.0...main
+[git_tag_comparison]: https://github.com/blaind/webp-animation/compare/v0.7.0...main
+
+## Version 0.7.0 (2022-07-21)
+
+[Compare changelog](https://github.com/blaind/webp-animation/compare/v0.6.0...v0.7.0)
+
+### Added
+
+- [Implement `std::error::Error` for `Error`][3]
 
 ## Version 0.6.0 (2022-04-17)
 
@@ -30,3 +38,4 @@
 - [Disabled image default features][2]
 
 [2]: https://github.com/blaind/webp-animation/pull/2
+[3]: https://github.com/blaind/webp-animation/pull/8
