@@ -104,10 +104,6 @@ std::fs::write("my_animation.webp", webp_data).unwrap();
 See [docs](https://docs.rs/webp-animation/0.1.3/webp_animation/) for other encoding options, e.g.
 for lossy encoding.
 
-## Rust Version Support
-
-The minimum supported Rust version is 1.47
-
 ## Future plans
 
 Keep up with upstream `libwebp` changes.
