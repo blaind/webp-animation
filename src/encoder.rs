@@ -259,6 +259,8 @@ fn convert_options(
         enc_options
     });
 
+    enc_options.anim_params.loop_count = options.anim_params.loop_count;
+
     enc_options.minimize_size = if options.minimize_size { 1 } else { 0 };
     enc_options.kmin = options.kmin as i32;
     enc_options.kmax = options.kmax as i32;
