@@ -342,12 +342,12 @@ impl PictureWrapper {
                 ColorMode::Rgb => webp::WebPPictureImportRGB(
                     &mut self.picture,
                     data.as_ptr(),
-                    self.picture.width * 4,
+                    self.picture.width * 3,
                 ),
                 ColorMode::Bgr => webp::WebPPictureImportBGR(
                     &mut self.picture,
                     data.as_ptr(),
-                    self.picture.width * 4,
+                    self.picture.width * 3,
                 ),
             }
         } == 0
