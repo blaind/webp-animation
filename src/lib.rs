@@ -40,11 +40,14 @@ const PIXEL_BYTES: usize = 4;
 /// Color Mode that configures the output type of [`Decoder`] [`Frame`]'s
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ColorMode {
+    /// Rgb (red, green, blue) -no alpha
+    Rgb,
     /// Rgba (red, green, blue, alpha)
     Rgba,
     /// Bgra (blue, green, red, alpha)
     Bgra,
-    // what about MODE_rgbA and MODE_bgrA ?
+    // Bgr (blue, green, red) - no alpha
+    Bgr,
 }
 
 /// Error type produced by `webp_animation` code
