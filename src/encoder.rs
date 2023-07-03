@@ -30,14 +30,14 @@ use crate::LossyEncodingConfig; // for docs
 /// // insert frames to specific (increasing) timestamps
 /// for i in 0..5 {
 ///   let rgba_data = if i % 2 == 0 { &bright_frame } else { &dark_frame };
-///   let frame_timestamp = i * 170;
+///   let frame_timestamp_ms = i * 170;
 ///
-///   encoder.add_frame(rgba_data, frame_timestamp).unwrap();
+///   encoder.add_frame(rgba_data, frame_timestamp_ms).unwrap();
 /// }
 ///
 /// // get encoded webp data
-/// let final_timestamp = 1_000;
-/// let webp_data = encoder.finalize(final_timestamp).unwrap();
+/// let final_timestamp_ms = 1_000;
+/// let webp_data = encoder.finalize(final_timestamp_ms).unwrap();
 /// // std::fs::write("my_animation.webp", webp_data);
 /// ```
 ///
@@ -132,11 +132,11 @@ impl Encoder {
     /// Inputs
     /// * `data` is an array of pixels in [`ColorMode`] format set by [`EncoderOptions`]
     ///   ([`ColorMode::Rgba`] by default)
-    /// * `timestamp` of this frame in milliseconds. Duration of a frame would be
+    /// * `timestamp_ms` of this frame in milliseconds. Duration of a frame would be
     ///   calculated as "timestamp of next frame - timestamp of this frame".
     ///   Hence, timestamps should be in non-decreasing order.
-    pub fn add_frame(&mut self, data: &[u8], timestamp: i32) -> Result<(), Error> {
-        self.add_frame_internal(data, timestamp, None)
+    pub fn add_frame(&mut self, data: &[u8], timestamp_ms: i32) -> Result<(), Error> {
+        self.add_frame_internal(data, timestamp_ms, None)
     }
 
     /// Add a new frame to be encoded with special per-frame configuration ([`EncodingConfig`])
@@ -145,10 +145,10 @@ impl Encoder {
     pub fn add_frame_with_config(
         &mut self,
         data: &[u8],
-        timestamp: i32,
+        timestamp_ms: i32,
         config: &EncodingConfig,
     ) -> Result<(), Error> {
-        self.add_frame_internal(data, timestamp, Some(config))
+        self.add_frame_internal(data, timestamp_ms, Some(config))
     }
 
     fn add_frame_internal(
@@ -205,16 +205,16 @@ impl Encoder {
 
     /// Will encode the stream and return encoded bytes in a [`WebPData`] upon success
     ///
-    /// `timestamp` behaves as in [`Encoder::add_frame`]
-    pub fn finalize(self, timestamp: i32) -> Result<WebPData, Error> {
+    /// `timestamp_ms` behaves as in [`Encoder::add_frame`]
+    pub fn finalize(self, timestamp_ms: i32) -> Result<WebPData, Error> {
         if self.previous_timestamp == -1 {
             // -1 = no frames added
             return Err(Error::NoFramesAdded);
         }
 
-        if timestamp < self.previous_timestamp {
+        if timestamp_ms < self.previous_timestamp {
             return Err(Error::TimestampMustBeEqualOrHigherThanPrevious(
-                timestamp,
+                timestamp_ms,
                 self.previous_timestamp,
             ));
         }
@@ -223,7 +223,7 @@ impl Encoder {
             webp::WebPAnimEncoderAdd(
                 self.encoder_wr.encoder,
                 ptr::null_mut(),
-                timestamp,
+                timestamp_ms,
                 ptr::null_mut(),
             )
         } == 0
@@ -240,7 +240,7 @@ impl Encoder {
 
         log::trace!(
             "Finalize encoding at timestamp {}, output binary size {} bytes",
-            timestamp,
+            timestamp_ms,
             data.len()
         );
 
