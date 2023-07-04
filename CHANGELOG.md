@@ -16,6 +16,7 @@
 - [Rename `timestamp` parameter into `timestamp_ms`][16]
 - [Improve finanlize function documentation][17]
 - Earlier minimum supported rust version 1.47 was not tested for and did not work, now CI-tested with 1.63
+- [Update env_logger dev dependency to 0.10.0][10]
 
 ## Version 0.7.0 (2022-07-21)
 
@@ -54,6 +55,7 @@
 
 [2]: https://github.com/blaind/webp-animation/pull/2
 [3]: https://github.com/blaind/webp-animation/pull/8
+[10]: https://github.com/blaind/webp-animation/pull/10
 [14]: https://github.com/blaind/webp-animation/pull/14
 [15]: https://github.com/blaind/webp-animation/pull/15
 [16]: https://github.com/blaind/webp-animation/pull/16
