@@ -1,6 +1,22 @@
 # Changelog
 
-[git_tag_comparison]: https://github.com/blaind/webp-animation/compare/v0.7.0...main
+[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.8.0...main)
+
+## Version 0.8.0 (2023-07-04)
+
+[Compare changelog](https://github.com/blaind/webp-animation/compare/v0.7.0...v0.8.0)
+
+### Added
+
+- [Add non-alpha RGB and BGR color modes][14]
+- [Add animation parameters configuration, allowing loop count configuration][15]
+
+### Changed
+
+- [Rename `timestamp` parameter into `timestamp_ms`][16]
+- [Improve finanlize function documentation][17]
+- Earlier minimum supported rust version 1.47 was not tested for and did not work, now CI-tested with 1.63
+- [Update env_logger dev dependency to 0.10.0][10]
 
 ## Version 0.7.0 (2022-07-21)
 
@@ -39,3 +55,8 @@
 
 [2]: https://github.com/blaind/webp-animation/pull/2
 [3]: https://github.com/blaind/webp-animation/pull/8
+[10]: https://github.com/blaind/webp-animation/pull/10
+[14]: https://github.com/blaind/webp-animation/pull/14
+[15]: https://github.com/blaind/webp-animation/pull/15
+[16]: https://github.com/blaind/webp-animation/pull/16
+[17]: https://github.com/blaind/webp-animation/pull/17
