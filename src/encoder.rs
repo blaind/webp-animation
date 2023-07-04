@@ -189,7 +189,7 @@ impl Encoder {
 
         self.previous_timestamp = timestamp;
 
-        log::trace!("Add frame at timestamp {}, {} bytes", timestamp, data.len());
+        log::trace!("Add a frame at timestamp {}ms, {} bytes", timestamp, data.len());
 
         Ok(())
     }
