@@ -110,6 +110,8 @@ impl<'a> Decoder<'a> {
         decoder_options.color_mode = match options.color_mode {
             ColorMode::Rgba => libwebp_sys::MODE_RGBA,
             ColorMode::Bgra => libwebp_sys::MODE_BGRA,
+            ColorMode::Rgb => libwebp_sys::MODE_RGB,
+            ColorMode::Bgr => libwebp_sys::MODE_BGR,
         };
 
         // pin data (& options above) because decoder takes reference to them
