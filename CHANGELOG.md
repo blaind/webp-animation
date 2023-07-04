@@ -1,6 +1,6 @@
 # Changelog
 
-[git_tag_comparison]: https://github.com/blaind/webp-animation/compare/v0.8.0...main
+[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.8.0...main)
 
 ## Version 0.8.0 (2023-07-04)
 
@@ -9,6 +9,7 @@
 ### Added
 
 - [Add non-alpha RGB and BGR color modes][14]
+- [Add animation parameters configuration, allowing loop count configuration][15]
 
 ### Changed
 
