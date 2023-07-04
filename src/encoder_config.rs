@@ -61,9 +61,10 @@ impl Default for EncoderOptions {
     }
 }
 
+/// Animation parameters
 #[derive(Clone)]
 pub struct AnimParams {
-    // Number of times to repeat the animation [0 = infinite].
+    /// Number of times to repeat the animation [0 = infinite, default].
     pub loop_count: i32,
 }
 
