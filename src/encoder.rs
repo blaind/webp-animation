@@ -239,7 +239,7 @@ impl Encoder {
         }
 
         log::trace!(
-            "Finalize encoding at timestamp {}, output binary size {} bytes",
+            "Finalize encoding at timestamp {}ms, output binary size {} bytes",
             timestamp_ms,
             data.len()
         );
