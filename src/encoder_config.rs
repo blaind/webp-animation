@@ -13,6 +13,9 @@ use libwebp_sys as webp;
 /// or per-frame.
 #[derive(Clone)]
 pub struct EncoderOptions {
+    /// Animation parameters
+    pub anim_params: AnimParams,
+
     /// If true, minimize the output size (slow). Implicitly
     /// disables key-frame insertion. Default `false`
     pub minimize_size: bool,
@@ -46,6 +49,7 @@ pub struct EncoderOptions {
 impl Default for EncoderOptions {
     fn default() -> Self {
         Self {
+            anim_params: AnimParams::default(),
             minimize_size: false,
             kmin: 0,
             kmax: 0,
@@ -54,6 +58,19 @@ impl Default for EncoderOptions {
             color_mode: ColorMode::Rgba,
             encoding_config: None,
         }
+    }
+}
+
+/// Animation parameters
+#[derive(Clone)]
+pub struct AnimParams {
+    /// Number of times to repeat the animation [0 = infinite, default].
+    pub loop_count: i32,
+}
+
+impl Default for AnimParams {
+    fn default() -> Self {
+        Self { loop_count: 0 }
     }
 }
 
