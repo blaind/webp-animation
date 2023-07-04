@@ -205,7 +205,7 @@ impl Encoder {
 
     /// Will encode the stream and return encoded bytes in a [`WebPData`] upon success
     ///
-    /// `timestamp_ms` behaves as in [`Encoder::add_frame`]
+    /// `timestamp_ms` behaves as in [`Encoder::add_frame`], and determines the duration of the last frame
     pub fn finalize(self, timestamp_ms: i32) -> Result<WebPData, Error> {
         if self.previous_timestamp == -1 {
             // -1 = no frames added
