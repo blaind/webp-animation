@@ -54,3 +54,7 @@
 
 [2]: https://github.com/blaind/webp-animation/pull/2
 [3]: https://github.com/blaind/webp-animation/pull/8
+[14]: https://github.com/blaind/webp-animation/pull/14
+[15]: https://github.com/blaind/webp-animation/pull/15
+[16]: https://github.com/blaind/webp-animation/pull/16
+[17]: https://github.com/blaind/webp-animation/pull/17
