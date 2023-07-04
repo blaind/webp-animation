@@ -106,8 +106,8 @@ let webp_data = encoder.finalize(final_timestamp_ms).unwrap();
 std::fs::write("my_animation.webp", webp_data).unwrap();
 ```
 
-See [docs](https://docs.rs/webp-animation/0.1.3/webp_animation/) for other encoding options, e.g.
-for lossy encoding.
+See the [documentation](https://docs.rs/webp-animation/latest/webp_animation) for other encoding options, e.g.
+for lossy encoding. For tuning the options, use the [`Encoder::new_with_options`](https://docs.rs/webp-animation/latest/webp_animation/struct.Encoder.html#method.new_with_options) method.
 
 ## Future plans
 
