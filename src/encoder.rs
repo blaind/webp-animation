@@ -103,7 +103,7 @@ impl Encoder {
         dimensions: (u32, u32),
         options: EncoderOptions,
     ) -> Result<Self, Error> {
-        if dimensions.0 <= 0 || dimensions.1 <= 0 {
+        if dimensions.0 == 0 || dimensions.1 == 0 {
             return Err(Error::DimensionsMustbePositive);
         }
 
@@ -189,7 +189,11 @@ impl Encoder {
 
         self.previous_timestamp = timestamp;
 
-        log::trace!("Add a frame at timestamp {}ms, {} bytes", timestamp, data.len());
+        log::trace!(
+            "Add a frame at timestamp {}ms, {} bytes",
+            timestamp,
+            data.len()
+        );
 
         Ok(())
     }
