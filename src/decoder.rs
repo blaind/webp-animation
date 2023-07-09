@@ -92,7 +92,7 @@ impl<'a> Decoder<'a> {
     /// }).unwrap();
     /// ```
     pub fn new_with_options(buffer: &'a [u8], options: DecoderOptions) -> Result<Self, Error> {
-        if buffer.len() <= 0 {
+        if buffer.is_empty() {
             return Err(Error::ZeroSizeBuffer);
         }
 
@@ -254,7 +254,7 @@ impl<'a> Iterator for DecoderIterator<'a> {
             return None;
         }
 
-        if output_buffer == std::ptr::null_mut() {
+        if output_buffer.is_null() {
             log::error!("webp::WebPAnimDecoderGetNext returned null output ptr, can not decode a frame. This should not happen");
             return None;
         }
