@@ -35,8 +35,6 @@ pub mod prelude {
     pub use crate::{Encoder, EncoderOptions, EncodingConfig, EncodingType, LossyEncodingConfig};
 }
 
-const PIXEL_BYTES: usize = 4;
-
 /// Color Mode that configures the output type of [`Decoder`] [`Frame`]'s
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ColorMode {
@@ -48,6 +46,17 @@ pub enum ColorMode {
     Bgra,
     // Bgr (blue, green, red) - no alpha
     Bgr,
+}
+
+impl ColorMode {
+    pub fn size(&self) -> usize {
+        match self {
+            Self::Rgb => 3,
+            Self::Rgba => 4,
+            Self::Bgra => 4,
+            Self::Bgr => 3,
+        }
+    }
 }
 
 /// Error type produced by `webp_animation` code
