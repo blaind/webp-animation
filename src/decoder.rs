@@ -2,7 +2,7 @@ use std::{fmt::Debug, mem, pin::Pin};
 
 use libwebp_sys as webp;
 
-use crate::{ColorMode, Error, Frame, PIXEL_BYTES};
+use crate::{ColorMode, Error, Frame};
 
 const MAX_CANVAS_SIZE: usize = 3840 * 2160; // 4k
 
@@ -260,10 +260,11 @@ impl<'a> Iterator for DecoderIterator<'a> {
         }
 
         let info = &self.animation_decoder.info;
+        let opts = &self.animation_decoder.options;
         let data = unsafe {
             std::slice::from_raw_parts(
                 output_buffer,
-                info.canvas_width as usize * info.canvas_height as usize * PIXEL_BYTES,
+                info.canvas_width as usize * info.canvas_height as usize * opts.color_mode.size(),
             )
         };
 
