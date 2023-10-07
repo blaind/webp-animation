@@ -328,26 +328,28 @@ impl PictureWrapper {
         }
 
         if unsafe {
+            let size = color_mode.size() as i32;
+
             match color_mode {
                 ColorMode::Rgba => webp::WebPPictureImportRGBA(
                     &mut self.picture,
                     data.as_ptr(),
-                    self.picture.width * 4,
+                    self.picture.width * size,
                 ),
                 ColorMode::Bgra => webp::WebPPictureImportBGRA(
                     &mut self.picture,
                     data.as_ptr(),
-                    self.picture.width * 4,
+                    self.picture.width * size,
                 ),
                 ColorMode::Rgb => webp::WebPPictureImportRGB(
                     &mut self.picture,
                     data.as_ptr(),
-                    self.picture.width * 3,
+                    self.picture.width * size,
                 ),
                 ColorMode::Bgr => webp::WebPPictureImportBGR(
                     &mut self.picture,
                     data.as_ptr(),
-                    self.picture.width * 3,
+                    self.picture.width * size,
                 ),
             }
         } == 0
