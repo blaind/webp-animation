@@ -1,6 +1,18 @@
 # Changelog
 
-[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.8.1...main)
+[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.9.0...main)
+
+## Version 0.9.0 (2023-10-07)
+
+[Compare changelog](https://github.com/blaind/webp-animation/compare/v0.8.1...v0.9.0)
+
+### Added
+
+- [impl Send/Sync for WebpData][20]
+
+### Changed
+
+- [Update libwebp-sys2 to 0.1.9][23]
 
 ## Version 0.8.1 (2023-10-07)
 
@@ -69,5 +81,7 @@
 [15]: https://github.com/blaind/webp-animation/pull/15
 [16]: https://github.com/blaind/webp-animation/pull/16
 [17]: https://github.com/blaind/webp-animation/pull/17
+[20]: https://github.com/blaind/webp-animation/pull/20
 [21]: https://github.com/blaind/webp-animation/pull/21
 [22]: https://github.com/blaind/webp-animation/pull/22
+[23]: https://github.com/blaind/webp-animation/pull/23
