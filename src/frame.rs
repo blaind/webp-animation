@@ -4,7 +4,7 @@ use std::fmt::Debug;
 use image::ImageBuffer;
 
 #[allow(unused_imports)]
-use crate::{ColorMode, Decoder, Error, PIXEL_BYTES};
+use crate::{ColorMode, Decoder, Error};
 
 /// An animation frame containing data and metadata produced by [`Decoder`]
 ///

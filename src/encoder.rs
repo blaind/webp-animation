@@ -2,9 +2,7 @@ use std::{mem, pin::Pin, ptr};
 
 use libwebp_sys as webp;
 
-use crate::{
-    ColorMode, ConfigContainer, EncoderOptions, EncodingConfig, Error, WebPData, PIXEL_BYTES,
-};
+use crate::{ColorMode, ConfigContainer, EncoderOptions, EncodingConfig, Error, WebPData};
 
 #[allow(unused_imports)]
 use crate::LossyEncodingConfig; // for docs
@@ -328,7 +326,7 @@ impl PictureWrapper {
 
     pub fn set_data(&mut self, data: &[u8], color_mode: ColorMode) -> Result<(), Error> {
         let received_len = data.len();
-        let expected_len = self.data_size();
+        let expected_len = self.data_size(color_mode);
         if received_len != expected_len {
             return Err(Error::BufferSizeFailed(expected_len, received_len));
         }
@@ -364,8 +362,8 @@ impl PictureWrapper {
         Ok(())
     }
 
-    fn data_size(&self) -> usize {
-        self.picture.width as usize * self.picture.height as usize * PIXEL_BYTES
+    fn data_size(&self, color_mode: ColorMode) -> usize {
+        self.picture.width as usize * self.picture.height as usize * color_mode.size()
     }
 }
 
