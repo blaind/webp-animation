@@ -49,12 +49,11 @@ pub enum ColorMode {
 }
 
 impl ColorMode {
+    /// Return the pixel bytesize for the color mode
     pub fn size(&self) -> usize {
         match self {
-            Self::Rgb => 3,
-            Self::Rgba => 4,
-            Self::Bgra => 4,
-            Self::Bgr => 3,
+            Self::Rgb | Self::Bgr => 3,
+            Self::Rgba | Self::Bgra => 4,
         }
     }
 }
