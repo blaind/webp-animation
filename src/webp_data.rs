@@ -28,6 +28,14 @@ impl WebPData {
     }
 }
 
+/// SAFETY: Sending `WebPData` to another thread is safe until there is no way to share internal
+/// pointer without borrowing in safe code
+unsafe impl Send for WebPData {}
+
+/// SAFETY: Sharing `WebPData` via borrowing is safe until there is no way to share internal
+/// pointer without borrowing in safe code
+unsafe impl Sync for WebPData {}
+
 impl Drop for WebPData {
     fn drop(&mut self) {
         unsafe { libwebp_sys::WebPDataClear(self.inner_ref()) }
