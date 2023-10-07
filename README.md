@@ -1,6 +1,6 @@
 # webp-animation &emsp; [![Build Status]][actions] [![Latest Version]][crates.io] [![Docs Version]][docs] [![Lines of Code]][github]
 
-[Build Status]: https://img.shields.io/github/workflow/status/blaind/webp-animation/test
+[Build Status]: https://img.shields.io/github/actions/workflow/status/blaind/webp-animation/ci.yml?branch=main
 [actions]: https://github.com/blaind/webp-animation/actions?query=branch%3Amain
 [Latest Version]: https://img.shields.io/crates/v/webp-animation.svg
 [crates.io]: https://crates.io/crates/webp-animation
