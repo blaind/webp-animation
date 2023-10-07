@@ -1,6 +1,15 @@
 # Changelog
 
-[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.8.0...main)
+[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.8.1...main)
+
+## Version 0.8.1 (2023-10-07)
+
+[Compare changelog](https://github.com/blaind/webp-animation/compare/v0.8.0...v0.8.1)
+
+### Changed
+
+- [Fix pixel size calculation for RGB and BGR][21]
+- [Use size() method for pixel size calculation][22]
 
 ## Version 0.8.0 (2023-07-04)
 
@@ -60,3 +69,5 @@
 [15]: https://github.com/blaind/webp-animation/pull/15
 [16]: https://github.com/blaind/webp-animation/pull/16
 [17]: https://github.com/blaind/webp-animation/pull/17
+[21]: https://github.com/blaind/webp-animation/pull/21
+[22]: https://github.com/blaind/webp-animation/pull/22
