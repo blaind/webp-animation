@@ -1,12 +1,12 @@
 [package]
 name = "webp-animation"
-version = "0.8.0"
+version = "0.8.1"
 authors = ["Mika Vatanen <blaind@blaind.net>"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/blaind/webp-animation"
 description = """
-A high-level Rust wrapper for decoding and encoding WebP animations 
+A high-level Rust wrapper for decoding and encoding WebP animations
 """
 keywords = ["webp", "webp-animation", "decoder", "encoder"]
 categories = ["multimedia::images", "multimedia", "api-bindings"]
