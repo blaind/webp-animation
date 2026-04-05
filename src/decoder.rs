@@ -172,7 +172,16 @@ impl<'a> Debug for Decoder<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let info = &self.info;
 
-        write!(f, "Decoder {{ buffer: {}b, info: {{ w: {}, h: {}, loop_cnt: {}, bgcolor: 0x{:x}, frame_count: {} }} }}", self.buffer.len(), info.canvas_width, info.canvas_height, info.loop_count, info.bgcolor, info.frame_count)
+        write!(
+            f,
+            "Decoder {{ buffer: {}b, info: {{ w: {}, h: {}, loop_cnt: {}, bgcolor: 0x{:x}, frame_count: {} }} }}",
+            self.buffer.len(),
+            info.canvas_width,
+            info.canvas_height,
+            info.loop_count,
+            info.bgcolor,
+            info.frame_count
+        )
     }
 }
 
@@ -250,12 +259,16 @@ impl<'a> Iterator for DecoderIterator<'a> {
         } != 1
         {
             // "False if any of the arguments are NULL, or if there is a parsing or decoding error, or if there are no more frames. Otherwise, returns true."
-            log::warn!("webp::WebPAnimDecoderGetNext did not return success - frame parsing failed, parsing/decoding error?");
+            log::warn!(
+                "webp::WebPAnimDecoderGetNext did not return success - frame parsing failed, parsing/decoding error?"
+            );
             return None;
         }
 
         if output_buffer.is_null() {
-            log::error!("webp::WebPAnimDecoderGetNext returned null output ptr, can not decode a frame. This should not happen");
+            log::error!(
+                "webp::WebPAnimDecoderGetNext returned null output ptr, can not decode a frame. This should not happen"
+            );
             return None;
         }
 

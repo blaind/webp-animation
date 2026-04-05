@@ -2,13 +2,13 @@
 name = "fuzz"
 version = "0.1.0"
 authors = ["Mika Vatanen <blaind@blaind.net>"]
-edition = "2018"
+edition = "2024"
 
 [package.metadata]
 cargo-fuzz = true
 
 [dependencies]
-libfuzzer-sys = "0.3.0"
+libfuzzer-sys = "0.4.12"
 webp-animation = { path = ".." }
 
 [[bin]]

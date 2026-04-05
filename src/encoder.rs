@@ -164,21 +164,25 @@ impl Encoder {
 
         self.frame.set_data(data, self.options.color_mode)?;
 
+        // keep config alive
+        let tmp_config;
+        let config_ptr = match config {
+            Some(cfg) => {
+                tmp_config = cfg.to_config_container()?;
+                &*tmp_config // Deref or explicit borrow
+            }
+            None => match &self.encoding_config {
+                Some(cfg) => &**cfg,
+                None => ptr::null(),
+            },
+        };
+
         if unsafe {
             webp::WebPAnimEncoderAdd(
                 self.encoder_wr.encoder,
                 self.frame.as_webp_picture_ref(),
                 timestamp,
-                match config {
-                    Some(config) => {
-                        let config = config.to_config_container()?;
-                        config.as_ptr()
-                    }
-                    None => match &self.encoding_config {
-                        Some(config) => config.as_ptr(),
-                        None => std::ptr::null(),
-                    },
-                },
+                config_ptr,
             )
         } == 0
         {
@@ -186,7 +190,6 @@ impl Encoder {
         }
 
         self.previous_timestamp = timestamp;
-
         log::trace!(
             "Add a frame at timestamp {}ms, {} bytes",
             timestamp,
@@ -474,16 +477,18 @@ mod tests {
     #[test]
     fn test_wrong_encoding_config() {
         let mut encoder = Encoder::new((4, 4)).unwrap();
-        assert!(encoder
-            .add_frame_with_config(
-                &[0u8; 4 * 4 * 4],
-                0,
-                &EncodingConfig {
-                    quality: 100.,
-                    ..Default::default()
-                },
-            )
-            .is_ok());
+        assert!(
+            encoder
+                .add_frame_with_config(
+                    &[0u8; 4 * 4 * 4],
+                    0,
+                    &EncodingConfig {
+                        quality: 100.,
+                        ..Default::default()
+                    },
+                )
+                .is_ok()
+        );
 
         assert_eq!(
             encoder
@@ -529,11 +534,13 @@ mod tests {
             Error::InvalidEncodingConfig
         );
 
-        assert!(add_lossy_frame(LossyEncodingConfig {
-            filter_sharpness: 7,
-            ..Default::default()
-        })
-        .is_ok());
+        assert!(
+            add_lossy_frame(LossyEncodingConfig {
+                filter_sharpness: 7,
+                ..Default::default()
+            })
+            .is_ok()
+        );
     }
 
     fn add_lossy_frame(lossy_config: LossyEncodingConfig) -> Result<(), Error> {

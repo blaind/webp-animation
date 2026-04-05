@@ -1,4 +1,4 @@
-use std::mem;
+use std::{mem, ops::Deref};
 
 use crate::{ColorMode, Error};
 
@@ -331,8 +331,12 @@ impl ConfigContainer {
             config: webp_config,
         })
     }
+}
 
-    pub fn as_ptr(&self) -> &webp::WebPConfig {
+impl Deref for ConfigContainer {
+    type Target = webp::WebPConfig;
+
+    fn deref(&self) -> &Self::Target {
         &self.config
     }
 }
@@ -340,7 +344,6 @@ impl ConfigContainer {
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[test]
     fn test_config_defaults() {
         let default_webp_config = unsafe {
@@ -351,7 +354,7 @@ mod tests {
 
         let config = ConfigContainer::new(&EncodingConfig::default()).unwrap();
 
-        let left = config.as_ptr();
+        let left = &*config;
         let def = &default_webp_config;
 
         // custom-set
