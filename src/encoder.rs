@@ -279,6 +279,8 @@ struct EncoderWrapper {
     options: Pin<Box<webp::WebPAnimEncoderOptions>>,
 }
 
+unsafe impl Send for EncoderWrapper {}
+
 impl EncoderWrapper {
     pub fn new(
         dimensions: (u32, u32),

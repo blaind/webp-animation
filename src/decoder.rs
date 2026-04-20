@@ -185,6 +185,8 @@ struct DecoderWrapper {
     options: Pin<Box<webp::WebPAnimDecoderOptions>>,
 }
 
+unsafe impl Send for DecoderWrapper {}
+
 impl DecoderWrapper {
     pub fn new(
         data: Pin<Box<webp::WebPData>>,
