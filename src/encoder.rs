@@ -439,6 +439,38 @@ mod tests {
     }
 
     #[test]
+    fn test_per_frame_encoding_config_lifetime() {
+        let config = EncodingConfig {
+            quality: 100.,
+            ..Default::default()
+        };
+        let frame = [0u8; 4 * 4 * 4];
+
+        // Control case: storing the config in the encoder keeps the
+        // ConfigContainer alive across the WebPAnimEncoderAdd FFI call.
+        let mut default_config_encoder = Encoder::new_with_options(
+            (4, 4),
+            EncoderOptions {
+                encoding_config: Some(config.clone()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        default_config_encoder.add_frame(&frame, 0).unwrap();
+        assert!(default_config_encoder.finalize(10).unwrap().len() > 0);
+
+        // Reproducer: add_frame_with_config currently creates a temporary
+        // ConfigContainer while building the raw FFI argument. That temporary is
+        // dropped before libwebp reads the pointer, so optimized/ASan builds can
+        // observe dead stack data and reject an otherwise valid configuration.
+        let mut per_frame_config_encoder = Encoder::new((4, 4)).unwrap();
+        per_frame_config_encoder
+            .add_frame_with_config(&frame, 0, &config)
+            .unwrap();
+        assert!(per_frame_config_encoder.finalize(10).unwrap().len() > 0);
+    }
+
+    #[test]
     fn test_failures() {
         let mut encoder = Encoder::new((400, 400)).unwrap();
         assert_eq!(
