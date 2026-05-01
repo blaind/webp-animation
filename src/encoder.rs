@@ -164,21 +164,29 @@ impl Encoder {
 
         self.frame.set_data(data, self.options.color_mode)?;
 
+        // Keep the per-frame config container in a local binding so the raw
+        // pointer passed to libwebp remains valid until WebPAnimEncoderAdd
+        // returns. Building this inside the FFI argument list would drop the
+        // temporary before libwebp reads it.
+        let frame_encoding_config = match config {
+            Some(config) => Some(config.to_config_container()?),
+            None => None,
+        };
+
+        // Derive the raw pointer from bindings that outlive the unsafe call:
+        // either the per-frame binding above or the encoder's stored default.
+        let encoding_config = match (&frame_encoding_config, &self.encoding_config) {
+            (Some(config), _) => config.as_ptr(),
+            (None, Some(config)) => config.as_ptr(),
+            (None, None) => ptr::null(),
+        };
+
         if unsafe {
             webp::WebPAnimEncoderAdd(
                 self.encoder_wr.encoder,
                 self.frame.as_webp_picture_ref(),
                 timestamp,
-                match config {
-                    Some(config) => {
-                        let config = config.to_config_container()?;
-                        config.as_ptr()
-                    }
-                    None => match &self.encoding_config {
-                        Some(config) => config.as_ptr(),
-                        None => std::ptr::null(),
-                    },
-                },
+                encoding_config,
             )
         } == 0
         {
@@ -436,6 +444,38 @@ mod tests {
         let frames: Vec<_> = decoder.into_iter().collect();
         assert_eq!(frames[0].dimensions(), (400, 400));
         assert_eq!(frames[0].data(), &[0u8; 400 * 400 * 4]);
+    }
+
+    #[test]
+    fn test_per_frame_encoding_config_lifetime() {
+        let config = EncodingConfig {
+            quality: 100.,
+            ..Default::default()
+        };
+        let frame = [0u8; 4 * 4 * 4];
+
+        // Control case: storing the config in the encoder keeps the
+        // ConfigContainer alive across the WebPAnimEncoderAdd FFI call.
+        let mut default_config_encoder = Encoder::new_with_options(
+            (4, 4),
+            EncoderOptions {
+                encoding_config: Some(config.clone()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        default_config_encoder.add_frame(&frame, 0).unwrap();
+        assert!(default_config_encoder.finalize(10).unwrap().len() > 0);
+
+        // Regression check: add_frame_with_config used to create a temporary
+        // ConfigContainer while building the raw FFI argument. That temporary
+        // was dropped before libwebp read the pointer, so optimized/ASan builds
+        // could observe dead stack data and reject this valid configuration.
+        let mut per_frame_config_encoder = Encoder::new((4, 4)).unwrap();
+        per_frame_config_encoder
+            .add_frame_with_config(&frame, 0, &config)
+            .unwrap();
+        assert!(per_frame_config_encoder.finalize(10).unwrap().len() > 0);
     }
 
     #[test]
